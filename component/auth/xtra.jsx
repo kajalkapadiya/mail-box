@@ -24,6 +24,10 @@ const authContext = createSlice({
       localStorage.removeItem("token");
       localStorage.removeItem("_id");
       localStorage.removeItem("crntEmail");
+      localStorage.removeItem("msdData");
+      localStorage.removeItem("fromEmail");
+      localStorage.removeItem("toEmail");
+      localStorage.removeItem("msgData");
     },
   },
 });

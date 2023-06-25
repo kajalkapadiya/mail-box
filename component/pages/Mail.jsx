@@ -45,6 +45,7 @@ const Mail = (prps) => {
           emailData,
           titleData,
           msgData,
+          read: false,
         }),
         headers: { "Content-type": "application/json" },
       }

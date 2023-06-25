@@ -1,16 +1,24 @@
 import { useEffect, useState } from "react";
-import { Card, Navbar } from "react-bootstrap";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { Navbar } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { getDataAction } from "../auth/msgData";
+import { markAction } from "../auth/msgData";
+import { fetchAction } from "../auth/msgData";
+import "./Home.css";
 
 const Home = () => {
   const history = useHistory();
   const [emails, setEmails] = useState([]);
+  const dispatch = useDispatch();
+  const mark = useDispatch();
+  const fetchData = useDispatch();
   const crntEmail = useSelector((state) => state.crntEmail.crntEmail);
+  const unreadCount = useSelector((state) => state.msgData.unreadCount);
 
   useEffect(() => {
     fetchEmails();
-  }, []);
+  }, [emails]);
 
   const fetchEmails = async () => {
     try {
@@ -19,14 +27,14 @@ const Home = () => {
       );
       const data = await response.json();
       if (response.ok) {
-        const fetchedEmails = Object.values(data); // Convert the object to an array
+        const fetchedEmails = Object.entries(data);
+        // console.log(fetchedEmails);
+        fetchData(fetchAction.fetchEmailsSuccess(fetchedEmails));
         setEmails(fetchedEmails);
       } else {
-        // Handle error case
         console.log("Error fetching emails");
       }
     } catch (error) {
-      // Handle error case
       console.log("Error fetching emails:", error);
     }
   };
@@ -35,8 +43,31 @@ const Home = () => {
     history.replace("/mail");
   };
 
-  const openEmail = () => {
-    console.log("done");
+  const openEmail = async (index, email) => {
+    const emailData = email.fromEmailData;
+    const titleData = email.titleData;
+    const msgData = email.msgData;
+    dispatch(getDataAction.getData({ emailData, titleData, msgData }));
+
+    if (email && !email.read) {
+      mark(markAction.markEmailAsRead(index));
+      const result = await fetch(
+        `https://mail-box-1833c-default-rtdb.firebaseio.com/${crntEmail}/${index}.json`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            read: true,
+          }),
+          headers: { "content-type": "application/json" },
+        }
+      );
+      const resultData = await result.json();
+      console.log(resultData);
+    }
+
+    history.replace("/mailView");
+    console.log("index", index);
+    console.log("email", email);
   };
 
   return (
@@ -54,6 +85,7 @@ const Home = () => {
             <li>
               <Navbar>
                 <a>Unread</a>
+                <span>{unreadCount}</span>
               </Navbar>
             </li>
             <li>
@@ -121,12 +153,19 @@ const Home = () => {
         <div className="col">
           <h1>Inbox</h1>
           {emails.length > 0 ? (
-            emails.map((email, index) => (
-              <div key={index} className="card">
-                <div onClick={openEmail}>
-                  <strong className="d-flex">{`from - ${email.fromEmailData}`}</strong>
-                  <strong className="d-flex">{`Topic - ${email.titleData}`}</strong>
-                  <div className="d-flex">{email.msgData}</div>
+            emails.map((email) => (
+              <div
+                key={email[0]}
+                className={`card ${email[1].read ? "" : "unread"}`}
+              >
+                <div
+                  onClick={() => {
+                    openEmail(email[0], email[1]);
+                  }}
+                >
+                  <strong className="d-flex">{`from - ${email[1].fromEmailData}`}</strong>
+                  <strong className="d-flex">{`Topic - ${email[1].titleData}`}</strong>
+                  <div className="d-flex">{email[1].msgData}</div>
                 </div>
               </div>
             ))
