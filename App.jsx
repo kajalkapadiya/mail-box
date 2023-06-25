@@ -13,35 +13,37 @@ function App() {
   const isLoggedIn = useSelector((state) => state.auth.isAuth);
 
   return (
-    <div className="app-container">
-      <MainHeader />
-      <Switch>
-        <Route path="/" exact>
-          <Redirect to="/home" />
-        </Route>
-        <Route path="/home">
-          {isLoggedIn && <Home />}
-          {!isLoggedIn && <Redirect to="/login" />}
-        </Route>
-        <Route path="/product">
-          {isLoggedIn && <Product />}
-          {!isLoggedIn && <Redirect to="/login" />}
-        </Route>
-        <Route path="/about">
-          {isLoggedIn && <About />}
-          {!isLoggedIn && <Redirect to="/login" />}
-        </Route>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/mail">
-          <Mail />
-        </Route>
-        <Route path="/forgot">
-          <ForgotPass />
-        </Route>
-      </Switch>
-    </div>
+    <>
+      <div className="app-container">
+        <MainHeader />
+        <Switch>
+          <Route path="/" exact>
+            <Redirect to="/home" />
+          </Route>
+          <Route path="/home">
+            {isLoggedIn && <Home />}
+            {!isLoggedIn && <Redirect to="/login" />}
+          </Route>
+          <Route path="/product">
+            {isLoggedIn && <Product />}
+            {!isLoggedIn && <Redirect to="/login" />}
+          </Route>
+          <Route path="/about">
+            {isLoggedIn && <About />}
+            {!isLoggedIn && <Redirect to="/login" />}
+          </Route>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/mail">
+            <Mail />
+          </Route>
+          <Route path="/forgot">
+            <ForgotPass />
+          </Route>
+        </Switch>
+      </div>
+    </>
   );
 }
 

@@ -11,7 +11,6 @@ const authContext = createSlice({
   initialState,
   reducers: {
     login(state, payload) {
-      console.log(payload);
       state.token = payload.payload.dataEmail;
       state.id = payload.payload.dataId;
       localStorage.setItem("token", payload.payload.dataEmail);
@@ -23,6 +22,8 @@ const authContext = createSlice({
       state.id = null;
       state.isAuth = false;
       localStorage.removeItem("token");
+      localStorage.removeItem("_id");
+      localStorage.removeItem("crntEmail");
     },
   },
 });

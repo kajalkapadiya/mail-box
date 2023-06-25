@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
-import { Button, Card } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { authActions } from "../auth/xtra";
+import { crntEmailAction } from "../auth/currentEmail";
 import Form from "react-bootstrap/Form";
 
 const Login = () => {
@@ -11,6 +12,7 @@ const Login = () => {
   const confirmRef = useRef();
   const history = useHistory();
   const dispatch = useDispatch();
+  const crntEmail = useDispatch();
 
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -65,7 +67,7 @@ const Login = () => {
           const dataEmail = data.email;
           const dataId = data.idToken;
           dispatch(authActions.login({ dataEmail, dataId }));
-          console.log("login");
+          crntEmail(crntEmailAction.crntLogin(emailRef.current.value));
           history.replace("/");
         })
         .catch((err) => {
