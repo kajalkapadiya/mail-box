@@ -70,6 +70,14 @@ const Home = () => {
     console.log("email", email);
   };
 
+  const deleteHandler = (key) => {
+    console.log(key);
+    fetch(
+      `https://mail-box-1833c-default-rtdb.firebaseio.com/${crntEmail}/${key}.json`,
+      { method: "DELETE", headers: { "content-type": "application/json" } }
+    );
+  };
+
   return (
     <div>
       <div className="row">
@@ -156,16 +164,26 @@ const Home = () => {
             emails.map((email) => (
               <div
                 key={email[0]}
-                className={`card ${email[1].read ? "" : "unread"}`}
+                className={`card ${email[1].read ? "" : "unread"} card-size`}
               >
-                <div
-                  onClick={() => {
-                    openEmail(email[0], email[1]);
-                  }}
-                >
-                  <strong className="d-flex">{`from - ${email[1].fromEmailData}`}</strong>
+                <div>
+                  <strong
+                    className="d-flex"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      openEmail(email[0], email[1]);
+                    }}
+                  >{`from - ${email[1].fromEmailData}`}</strong>
                   <strong className="d-flex">{`Topic - ${email[1].titleData}`}</strong>
                   <div className="d-flex">{email[1].msgData}</div>
+                  <button
+                    className=" delete-button"
+                    onClick={() => {
+                      deleteHandler(email[0]);
+                    }}
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             ))
