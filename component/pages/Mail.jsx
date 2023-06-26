@@ -20,8 +20,6 @@ const Mail = (prps) => {
     setEditorData(strippedData); // Update the editorData in the Mail component
   };
 
-  const mailId = localStorage.getItem("token");
-
   const submitMail = async (e) => {
     e.preventDefault();
 
@@ -53,6 +51,23 @@ const Mail = (prps) => {
     console.log(response);
     history.replace("/home");
     alert("mail is submitted");
+
+    // this mail is post for making sent box.
+
+    await fetch(
+      `https://mail-box-1833c-default-rtdb.firebaseio.com/fromEmails.json`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          fromEmailData,
+          emailData,
+          titleData,
+          msgData,
+          read: false,
+        }),
+        headers: { "Content-type": "application/json" },
+      }
+    );
   };
 
   return (
@@ -96,14 +111,6 @@ const Mail = (prps) => {
               />
             </div>
             <hr />
-            {/* <textarea
-              id="message"
-              rows={11}
-              ref={msg}
-              className="form-control-plaintext"
-              required
-            />
-            <hr /> */}
             <div>
               <div className="editor">
                 <TextEditor onEditorDataChange={handleEditorDataChange} />

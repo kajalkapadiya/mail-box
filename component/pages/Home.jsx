@@ -98,7 +98,16 @@ const Home = () => {
             </li>
             <li>
               <Navbar>
-                <a>Starred</a>
+                <a
+                  href="/sent"
+                  style={{
+                    textDecoration: "none",
+                    cursor: "pointer",
+                    color: "black",
+                  }}
+                >
+                  Sent
+                </a>
               </Navbar>
             </li>
             <li>

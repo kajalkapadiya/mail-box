@@ -9,9 +9,11 @@ import Product from "./component/pages/Product";
 import ForgotPass from "./component/pages/ForgotPass";
 import Mail from "./component/pages/Mail";
 import MailView from "./component/pages/MailView";
+import Sent from "./component/pages/Sent";
 
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.isAuth);
+  console.log("this is app component");
 
   return (
     <>
@@ -22,7 +24,7 @@ function App() {
             <Redirect to="/home" />
           </Route>
           <Route path="/mailView/" exact>
-            <MailView/>
+            <MailView />
           </Route>
           <Route path="/home">
             {isLoggedIn && <Home />}
@@ -41,6 +43,9 @@ function App() {
           </Route>
           <Route path="/mail">
             <Mail />
+          </Route>
+          <Route path="/sent">
+            <Sent />
           </Route>
           <Route path="/forgot">
             <ForgotPass />

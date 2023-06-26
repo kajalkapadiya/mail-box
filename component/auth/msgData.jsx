@@ -7,7 +7,7 @@ const initialState = {
     msgMSGData: "",
   },
   emails: [], // Array of emails
-  unreadCount: 7,
+  unreadCount: 0,
 };
 
 const msgData = createSlice({
@@ -24,9 +24,11 @@ const msgData = createSlice({
       state.message = msgData;
     },
     fetchEmailsSuccess(state, action) {
-    //   console.log(action.payload);
+      //   console.log(action.payload);
       state.emails = action.payload;
-      state.unreadCount = action.payload.filter((email) => !email[1].read).length;
+      state.unreadCount = action.payload.filter(
+        (email) => !email[1].read
+      ).length;
     },
     markEmailAsRead(state, action) {
       //   console.log(action);
@@ -36,10 +38,14 @@ const msgData = createSlice({
         state.unreadCount -= 1;
       }
     },
+    logOutHandler(state, action) {
+      state.unreadCount = 0;
+    },
   },
 });
 
 export const getDataAction = msgData.actions;
 export const fetchAction = msgData.actions;
 export const markAction = msgData.actions;
+export const logOutAction = msgData.actions;
 export default msgData.reducer;
