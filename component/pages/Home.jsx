@@ -5,6 +5,8 @@ import { useHistory } from "react-router-dom";
 import { getDataAction } from "../auth/msgData";
 import { markAction } from "../auth/msgData";
 import { fetchAction } from "../auth/msgData";
+import useDelete from "../customHooks/useDelete";
+import useFetch from "../customHooks/useFetch";
 import "./Home.css";
 
 const Home = () => {
@@ -12,31 +14,50 @@ const Home = () => {
   const [emails, setEmails] = useState([]);
   const dispatch = useDispatch();
   const mark = useDispatch();
-  const fetchData = useDispatch();
+  const fetchDataAct = useDispatch();
   const crntEmail = useSelector((state) => state.crntEmail.crntEmail);
   const unreadCount = useSelector((state) => state.msgData.unreadCount);
+  const [url, setUrl] = useState(null);
+  const [fetchUrl, setFetchUrl] = useState(null);
+
+  const { loading, error } = useDelete(url);
+  const { fetchData, fetchLoading, fetchError } = useFetch(fetchUrl);
 
   useEffect(() => {
+    if (fetchData) {
+      fetchDataAct(fetchAction.fetchEmailsSuccess(fetchData));
+      setEmails(fetchData);
+    }
+
     fetchEmails();
-  }, [emails]);
+  }, [fetchData]);
 
   const fetchEmails = async () => {
-    try {
-      const response = await fetch(
-        `https://mail-box-1833c-default-rtdb.firebaseio.com/${crntEmail}.json`
-      );
-      const data = await response.json();
-      if (response.ok) {
-        const fetchedEmails = Object.entries(data);
-        // console.log(fetchedEmails);
-        fetchData(fetchAction.fetchEmailsSuccess(fetchedEmails));
-        setEmails(fetchedEmails);
-      } else {
-        console.log("Error fetching emails");
-      }
-    } catch (error) {
-      console.log("Error fetching emails:", error);
+    setFetchUrl(
+      `https://mail-box-1833c-default-rtdb.firebaseio.com/${crntEmail}.json`
+    );
+    if (fetchLoading) {
+      return <div>Loading...</div>;
     }
+
+    if (fetchError) {
+      return <div>{fetchError}</div>;
+    }
+    // try {
+    //   const response = await fetch(
+    //     `https://mail-box-1833c-default-rtdb.firebaseio.com/${crntEmail}.json`
+    //   );
+    //   const data = await response.json();
+    //   if (response.ok) {
+    //     const fetchedEmails = Object.entries(data);
+    //     fetchData(fetchAction.fetchEmailsSuccess(fetchedEmails));
+    //     setEmails(fetchedEmails);
+    //   } else {
+    //     console.log("Error fetching emails");
+    //   }
+    // } catch (error) {
+    //   console.log("Error fetching emails:", error);
+    // }
   };
 
   const addMail = () => {
@@ -72,15 +93,16 @@ const Home = () => {
 
   const deleteHandler = (key) => {
     console.log(key);
-    fetch(
-      `https://mail-box-1833c-default-rtdb.firebaseio.com/${crntEmail}/${key}.json`,
-      { method: "DELETE", headers: { "content-type": "application/json" } }
+    setUrl(
+      `https://mail-box-1833c-default-rtdb.firebaseio.com/${crntEmail}/${key}.json`
     );
+    if (loading) return <div>Loading...</div>;
+    return <div>{error && <div>{error}</div>}</div>;
   };
 
   return (
     <div>
-      <div className="row">
+      <div className="row" style={{ height: "100vh" }}>
         <div className="col-2" style={{ marginLeft: "20px" }}>
           <ul className="list-inline ">
             <li>
@@ -167,7 +189,7 @@ const Home = () => {
             </li>
           </ul>
         </div>
-        <div className="col">
+        <div className="col" style={{ height: "100vh" }}>
           <h1>Inbox</h1>
           {emails.length > 0 ? (
             emails.map((email) => (

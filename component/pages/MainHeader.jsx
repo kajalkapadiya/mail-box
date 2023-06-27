@@ -28,7 +28,6 @@ const MainHeader = () => {
           </Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link href="/home">Home</Nav.Link>
-            <Nav.Link href="/product">Product</Nav.Link>
             <Nav.Link href="/about">About Us</Nav.Link>
             <Nav.Link href="/login"></Nav.Link>
           </Nav>

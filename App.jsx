@@ -5,7 +5,6 @@ import Login from "./component/pages/Login";
 import MainHeader from "./component/pages/MainHeader";
 import Home from "./component/pages/Home";
 import About from "./component/pages/About";
-import Product from "./component/pages/Product";
 import ForgotPass from "./component/pages/ForgotPass";
 import Mail from "./component/pages/Mail";
 import MailView from "./component/pages/MailView";
@@ -28,10 +27,6 @@ function App() {
           </Route>
           <Route path="/home">
             {isLoggedIn && <Home />}
-            {!isLoggedIn && <Redirect to="/login" />}
-          </Route>
-          <Route path="/product">
-            {isLoggedIn && <Product />}
             {!isLoggedIn && <Redirect to="/login" />}
           </Route>
           <Route path="/about">
